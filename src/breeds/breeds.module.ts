@@ -8,6 +8,6 @@ import { Breed } from './entities/breed.entity';
   imports:[TypeOrmModule.forFeature([Breed])], // Importamos el modulo de TypeORM para poder usar la entidad Breed
   controllers: [BreedsController],
   providers: [BreedsService],
-  exports: [BreedsModule],
+  exports: [TypeOrmModule],
 })
 export class BreedsModule {}
