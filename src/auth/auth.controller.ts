@@ -1,8 +1,21 @@
-import { Body, Controller, Get, Post, UseGuards, Request } from '@nestjs/common';
+import { User } from 'src/users/entities/user.entity';
+import { Body, Controller, Get, Post, Req, UseGuards,} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from './guard/auth.guard';
+import { Request } from 'express';
+import { RolesGuard } from './guard/roles.guard';
+import { Roles } from './decorators/role.decorator';
+import { Role } from './enums/role.enum';
+import { Auth } from './decorators/auth.decorator';
+
+interface RequestWithUser extends Request { ///mover a interfaces, no dejar aca
+    user: {
+        email: string;
+        role: string;
+    };
+}
 
 @Controller('auth')
 export class AuthController {
@@ -21,11 +34,20 @@ export class AuthController {
         return this.authService.login(loginDto);
     }
 
+    // @Get('profile')
+    // @Roles(Role.USER)
+    // @UseGuards(AuthGuard, RolesGuard)
+    // profile(
+    //     @Req() req: RequestWithUser,
+    // ){
+    //     return this.authService.profile(req.user);
+    // }
+
     @Get('profile')
-    @UseGuards(AuthGuard)
+    @Auth(Role.USER)
     profile(
-        @Request() req:// Adjust the type according to your JWT payload
+        @Req() req: RequestWithUser,
     ){
-        return req.user;
+        return this.authService.profile(req.user);
     }
 }

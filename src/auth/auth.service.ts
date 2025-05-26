@@ -22,10 +22,12 @@ export class AuthService {
         }
 
         
-        return await this.usersService.create({
+        await this.usersService.create({
             name,
             email,
             password: await bcrypt.hash(password, 10)});
+
+        return {name,email};
     }
 
     async login({email, password}: LoginDto){
@@ -39,11 +41,19 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        const payload = { email: user.email }; 
+        const payload = { email: user.email, role: user.role }; // Adjust the payload as needed
         const token = await this.jwtService.sign(payload);
         return {
             token,
             email,
         };
+    }
+
+    async profile({email,role}: {email: string, role: string}) {
+            // if(role !== 'admin'){
+            //     throw new UnauthorizedException('You do not have permission to access this resource');
+            // }
+
+        return await this.usersService.findByEmail(email);
     }
 }
