@@ -17,16 +17,23 @@ export class UsersService {
     return this.userRepository.save(createUserDto);
   }
 
+  findOne(id: number) {
+    return this.userRepository.findOneBy({id});
+  }
+
   findAll() {
-    return `This action returns all users`;
+    return this.userRepository.find();
   }
 
   findByEmail(email: string) {
     return this.userRepository.findOneBy({email});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findByEmailAndPassword(email: string) {
+    return this.userRepository.findOne({
+      where: {email},
+      select: ['id', 'name', 'email', 'password', 'role'],
+    })
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

@@ -2,7 +2,8 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { userInfo } from 'os';
 import { ROLES_KEY } from '../decorators/role.decorator';
-import { Role } from '../enums/role.enum';
+import { Role } from '../../common/enums/role.enum';
+import { TreeRepositoryUtils } from 'typeorm';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -27,6 +28,9 @@ export class RolesGuard implements CanActivate {
     }
 
     const {user} = context.switchToHttp().getRequest(); // Obtiene el usuario de la solicitud
+    if (user.role === Role.ADMIN) {
+      return true
+    }
     console.log(user.role);
     return role === user.role;
   }

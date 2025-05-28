@@ -1,4 +1,5 @@
 import { IsString } from "class-validator";
+import { Role } from "../../common/enums/role.enum";
 import { Column, DeleteDateColumn, Entity } from "typeorm";
 
 @Entity('users')
@@ -15,11 +16,11 @@ export class User {
     @IsString()
     email:string;
 
-    @Column()
+    @Column({ nullable: false, select: false })
     password:string;
 
-    @Column({default: 'user'})
-    role:string;
+    @Column({type: 'enum' ,default: Role.USER, enum: Role})
+    role:Role;
 
     @DeleteDateColumn()
     deletedAt: Date;
